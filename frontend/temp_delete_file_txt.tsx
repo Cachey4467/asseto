@@ -1,0 +1,1 @@
+This file will be deleted immediately to remove PriceAreaChart.tsx

@@ -1,0 +1,11 @@
+Flask==2.3.3
+Flask-CORS==4.0.0
+python-dotenv==1.0.0
+requests==2.31.0
+schedule==1.2.0
+ddddocr==1.5.6
+lxml==6.0.0
+pytz==2023.3
+longport>=3.0.7
+tinydb==4.8.0
+cachetools==6.1.0

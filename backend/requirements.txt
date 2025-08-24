@@ -9,3 +9,4 @@ pytz==2023.3
 longport>=3.0.7
 tinydb==4.8.0
 cachetools==6.1.0
+typing-extensions>=4.0.0

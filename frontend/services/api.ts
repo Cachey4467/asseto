@@ -1,5 +1,5 @@
-// 使用更新的API URL - 端口改为5000，路径前缀改为/api/v1/
-const API_BASE_URL = 'http://localhost:5000'
+// 使用相对路径，通过nginx代理访问后端API
+const API_BASE_URL = ''
 
 // 数据类型定义 - 支持任意字符串类型
 export interface Asset {
@@ -97,7 +97,7 @@ class ApiService {
         }
       }
 
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, config)
+      const response = await fetch(`${endpoint}`, config)
 
       // 检查响应状态
       if (!response.ok) {
@@ -298,7 +298,7 @@ class ApiService {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/transactions?${queryParams.toString()}`)
+      const response = await fetch(`/api/v1/transactions?${queryParams.toString()}`)
       
       if (!response.ok) {
         // 尝试解析错误响应
@@ -458,7 +458,7 @@ export const API_CONFIG = {
 // 导出用于测试的简单fetch函数
 export const testApiConnection = async (): Promise<boolean> => {
   try {
-    const apiUrl = `${API_BASE_URL}/api/v1/assets/info?userId=${CURRENT_USER_ID}`
+    const apiUrl = `/api/v1/assets/info?userId=${CURRENT_USER_ID}`
     console.log('🔍 testApiConnection: 测试API连接:', apiUrl)
     
     const response = await fetch(apiUrl, {

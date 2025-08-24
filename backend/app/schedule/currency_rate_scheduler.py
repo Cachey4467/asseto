@@ -5,6 +5,7 @@
 
 import schedule
 import logging
+import os
 from datetime import datetime, timedelta, timezone
 from app.core.database import Database, ForeignExchangeRateManager
 from app.util.time_utils import format_date_utc8
@@ -59,7 +60,10 @@ def setup_currency_rate_scheduler():
     """设置外汇汇率定时任务"""
     logger.info("设置外汇汇率定时任务...")
     
-    # 每天12点执行
+    # 设置时区为Asia/Shanghai (+8)
+    os.environ['TZ'] = 'Asia/Shanghai'
+    
+    # 每天12点执行（北京时间）
     schedule.every().day.at("12:00").do(fetch_daily_exchange_rates)
     
-    logger.info("外汇汇率定时任务设置完成，每天12:00执行")
+    logger.info("外汇汇率定时任务设置完成，每天12:00执行（北京时间）")

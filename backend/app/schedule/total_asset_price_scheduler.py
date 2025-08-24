@@ -6,6 +6,7 @@
 import schedule
 import logging
 import uuid
+import os
 from decimal import Decimal
 from datetime import datetime, timezone
 from app.core.database import Database, AccountManager, PriceTracingManager, ForeignExchangeRateManager
@@ -141,7 +142,10 @@ def setup_total_asset_price_scheduler():
     """设置总资产价格统计定时任务"""
     logger.info("设置总资产价格统计定时任务...")
     
-    # 每天凌晨2点执行
+    # 设置时区为Asia/Shanghai (+8)
+    os.environ['TZ'] = 'Asia/Shanghai'
+    
+    # 每天凌晨2点执行（北京时间）
     schedule.every().day.at("02:00").do(calculate_total_asset_price)
     
-    logger.info("总资产价格统计定时任务设置完成，每天02:00执行")
+    logger.info("总资产价格统计定时任务设置完成，每天02:00执行（北京时间）")

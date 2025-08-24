@@ -87,15 +87,6 @@ interface CacheItem {
   timestamp: number
 }
 
-
-
-// 获取API基础URL的安全函数
-const getApiBaseUrl = (): string => {
-  // 默认值
-  let apiBase = 'http://localhost:5000'
-  return apiBase
-}
-
 export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) => {
   const [selectedCurrency, setSelectedCurrency] = useState<CurrencyCode>('CNY')
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
@@ -173,8 +164,6 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
     // 3. 创建新请求
     const requestPromise = (async (): Promise<number> => {
       try {
-        const API_BASE = getApiBaseUrl()
-        
         // 使用AbortController处理超时
         const abortController = new AbortController()
         activeControllers.current.set(rateKey, abortController)
@@ -184,7 +173,7 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
         }, REQUEST_TIMEOUT)
         
         try {
-          const response = await fetch(`${API_BASE}/api/v1/get_foreign_currency_rate?from_currency=${fromCurrency}&to_currency=${toCurrency}&amount=1`, {
+          const response = await fetch(`/api/v1/get_foreign_currency_rate?from_currency=${fromCurrency}&to_currency=${toCurrency}&amount=1`, {
             method: 'GET',
             headers: {
               'Accept': 'application/json',
@@ -327,7 +316,6 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
       return
     }
     
-    const API_BASE = getApiBaseUrl()
     const USER_ID = 'test_user_001'
     
     // 标记请求开始
@@ -336,7 +324,7 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
     
     try {
       // 只需要获取资产数据，价格信息包含在assets的price字段中
-      const assetsUrl = `${API_BASE}/api/v1/assets/info?userId=${encodeURIComponent(USER_ID)}`
+      const assetsUrl = `/api/v1/assets/info?userId=${encodeURIComponent(USER_ID)}`
       
       const assetsResponse = await fetch(assetsUrl, {
         method: 'GET',

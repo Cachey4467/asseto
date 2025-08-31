@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
     asseto:
-        image: crpi-novp1hxow705ifwc.cn-guangzhou.personal.cr.aliyuncs.com/cckk4467/asseto:latest
+        image: crpi-novp1hxow705ifwc.cn-guangzhou.personal.cr.aliyuncs.com/cckk4467/asseto-pub:latest
         container_name: asseto
         ports:
             - "5432:80"

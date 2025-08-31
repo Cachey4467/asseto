@@ -146,6 +146,6 @@ def setup_total_asset_price_scheduler():
     os.environ['TZ'] = 'Asia/Shanghai'
     
     # 每天凌晨2点执行（北京时间）
-    schedule.every().day.at("02:00").do(calculate_total_asset_price)
+    schedule.every().day.at("23:55").do(calculate_total_asset_price)
     
-    logger.info("总资产价格统计定时任务设置完成，每天02:00执行（北京时间）")
+    logger.info("总资产价格统计定时任务设置完成，每天023:55执行（北京时间）")

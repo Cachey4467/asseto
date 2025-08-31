@@ -53,7 +53,7 @@ def start_scheduler():
     fetch_daily_exchange_rates()
     update_stock_prices()
     sync_all_user_longport_accounts()
-    calculate_total_asset_price()
+    # calculate_total_asset_price() 不需要每次运行的时候产生一条记录，每天定时就好
     
     # 运行调度器
     while True:

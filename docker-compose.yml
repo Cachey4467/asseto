@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+    asseto:
+        image: crpi-novp1hxow705ifwc.cn-guangzhou.personal.cr.aliyuncs.com/cckk4467/asseto:latest
+        container_name: asseto
+        ports:
+            - "5432:80"
+        volumes:
+            # 数据持久化
+            - ./data:/app/backend/instance
+            - ./logs:/var/log
+        environment:
+            - FLASK_ENV=production
+            - FLASK_APP=app
+            # 可以在这里添加其他环境变量
+            # - DATABASE_URL=your_database_url
+            # - API_KEY=your_api_key
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost/health"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 40s
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge

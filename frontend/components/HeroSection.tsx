@@ -69,7 +69,39 @@ export function HeroSection({ onAddTransactionRequest }: HeroSectionProps) {
 
     await processNode(assetTree)
     
-    const totalGrowth = totalCost > 0 ? ((totalValue - totalCost) / totalCost * 100) : 0
+    // 计算基于昨天价格的增长率
+    let totalGrowth = 0
+    try {
+      // 获取价格追踪数据
+      const response = await apiService.getPriceTracingData('0')
+      
+      if (response.success && response.data && response.data.price_tracing && response.data.price_tracing.length >= 1) {
+        // 获取价格数据并按日期排序
+        const priceData = response.data.price_tracing
+          .map(item => ({
+            date: new Date(item.date),
+            price: parseFloat(item.price)
+          }))
+          .sort((a, b) => a.date.getTime() - b.date.getTime())
+
+        if (priceData.length >= 1) {
+          // 获取昨天的价格（price_tracing数组中最后一个价格）
+          const yesterdayPrice = priceData[priceData.length - 1].price
+          
+          // 处理货币转换 - 假设price_tracing数据是以CNY为单位
+          const convertedYesterdayPrice = await convertCurrency(yesterdayPrice, 'CNY', selectedCurrency)
+          
+          // 计算增长率：(当前总价值 - 昨天价值) / 昨天价值 * 100
+          if (convertedYesterdayPrice > 0) {
+            totalGrowth = ((totalValue - convertedYesterdayPrice) / convertedYesterdayPrice) * 100
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to calculate growth from price tracing data:', error)
+      // 如果获取价格数据失败，fallback到原来的成本基础计算
+      totalGrowth = totalCost > 0 ? ((totalValue - totalCost) / totalCost * 100) : 0
+    }
 
     const portfolioResult = {
       totalValue: totalValue,
@@ -240,11 +272,6 @@ export function HeroSection({ onAddTransactionRequest }: HeroSectionProps) {
                           ? 'bg-green-500/20 text-green-100 border-green-500/30' 
                           : 'bg-red-500/20 text-red-100 border-red-500/30'
                       }`}>
-                        {portfolioData.totalGrowth >= 0 ? (
-                          <ArrowUpIcon className="w-3 h-3 mr-1" />
-                        ) : (
-                          <ArrowDownIcon className="w-3 h-3 mr-1" />
-                        )}
                         {formatPercentage(portfolioData.totalGrowth)}
                       </Badge>
                     )}
@@ -294,7 +321,7 @@ export function HeroSection({ onAddTransactionRequest }: HeroSectionProps) {
                   margin={{
                     top: 10,
                     right: 30,
-                    left: 60,  // 增加左边距确保Y轴标签显示完整
+                    left: 60,
                     bottom: 10,
                   }}
                 >
@@ -315,16 +342,16 @@ export function HeroSection({ onAddTransactionRequest }: HeroSectionProps) {
                     axisLine={false}
                     tickLine={false}
                     tick={{ fontSize: 12, fill: 'rgba(255, 255, 255, 0.7)' }}
-                    tickFormatter={(value) => `¥${formatPrice(value)}`}
-                    width={50}  // 固定Y轴宽度
+                    tickFormatter={(value) => `${formatPrice(value)}`}
+                    width={30}  // 固定Y轴宽度
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Area
                     type="monotone"
                     dataKey="price"
-                    stroke="rgba(255, 255, 255, 0.9)"
+                    stroke="rgba(200, 225, 255, 0.9)"
                     strokeWidth={2}
-                    fillOpacity={1}
+                    fillOpacity={0.25}
                     fill="url(#priceGradient)"
                     style={{ outline: 'none' }}  // 移除focus outline
                   />
